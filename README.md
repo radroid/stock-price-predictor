@@ -28,7 +28,7 @@
 
 [Figure 2: Amazon SageMaker Workflow ](images/aws-ml-workflow.png)
 
-[Figure 3: Typical Machine Learning Workflow (ZTM Udemy course) 7](images/ml101-6-step-ml-framework.png)
+[Figure 3: Typical Machine Learning Workflow (ZTM Udemy course)](images/ml101-6-step-ml-framework.png)
 
 # Capstone Proposal
 
