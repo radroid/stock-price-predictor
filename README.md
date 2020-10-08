@@ -50,8 +50,9 @@ I decided to take on this problem due to my interest in finance and some interns
 
 ## Problem Statement
 
-**The aim of this project is to predict the long-term price trend of two indices and one stock with at least 90% accuracy**
- **# 1****.** The stocks and indices will be chosen based on countries of interest and personal preference, but are clearly defined in the [Datasets and Inputs section](#Datasets-and-Inputs). In the end, the ability of the model will be tested by making predicting one full year worth of data. Furthermore, the model&#39;s ability to predict how the stocks performed in 2020 (the year of the pandemic) will be observed.
+**The aim of this project is to predict the long-term price trend of two indices and one stock with at least 90% accuracy.<sup>1</sup>** The stocks and indices will be chosen based on countries of interest and personal preference, but are clearly defined in the [Datasets and Inputs section](#Datasets-and-Inputs). In the end, the ability of the model will be tested by making predicting one full year worth of data. Furthermore, the model&#39;s ability to predict how the stocks performed in 2020 (the year of the pandemic) will be observed.
+
+_<sup>1</sup> 90% accuracy can be taken as 10% mean absolute percentage error._
 
 ## Datasets and Inputs
 
@@ -146,5 +147,3 @@ _Stock Market Index : Meaning, Importance, NSE &amp; BSE and more_ (2020) _Def
 Subhi Alzazah, F. and Cheng, X. (2020) &#39;Recent Advances in Stock Market Prediction Using Text Mining: A Survey&#39;, in _E-Business [Working Title]_. IntechOpen. doi: 10.5772/intechopen.92253.
 
 _Yahoo Finance – stock market live, quotes, business &amp; finance news_ (no date). Available at: https://in.finance.yahoo.com/ (Accessed: 2 October 2020).
-
-[1](#sdfootnote1anc)_90% accuracy is the same as 10% mean absolute percentage error._
