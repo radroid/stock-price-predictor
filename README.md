@@ -5,7 +5,30 @@
 
 [![powered by](https://forthebadge.com/images/badges/powered-by-water.svg)](https://forthebadge.com)
 
-## Machine Learning Engineer Nanodegree
+---
+
+# Table of Contents
+- [Stocks Prediction](#stocks-prediction)
+- [Table of Contents](#table-of-contents)
+- [Table of Figures](#table-of-figures)
+- [Capstone Proposal](#capstone-proposal)
+  - [Domain Background](#domain-background)
+  - [Problem Statement](#problem-statement)
+  - [Datasets and Inputs](#datasets-and-inputs)
+  - [Solution Statement](#solution-statement)
+  - [Benchmark Model](#benchmark-model)
+  - [Evaluation Metrics](#evaluation-metrics)
+  - [Project Design](#project-design)
+  - [References](#references)
+
+
+# Table of Figures
+
+[Figure 1: Example Stock Price vs Time graph with predicted values](images/metric-example-graph.png)
+
+[Figure 2: Amazon SageMaker Workflow ](images/aws-ml-workflow.png)
+
+[Figure 3: Typical Machine Learning Workflow (ZTM Udemy course) 7](images/ml101-6-step-ml-framework.png)
 
 # Capstone Proposal
 
@@ -13,39 +36,7 @@ Raj Dholakia
 
 October 8, 2020
 
-# Table of Contents
-
-**[Capstone Proposal 1](#_Toc53057726)**
-
-**[Table of Contents 1](#_Toc53057727)**
-
-**[Table of Figures 1](#_Toc53057728)**
-
-**[Domain Background 2](#_Toc53057729)**
-
-**[Problem Statement 3](#_Toc53057730)**
-
-**[Datasets and Inputs 3](#_Toc53057731)**
-
-**[Solution Statement 4](#_Toc53057732)**
-
-**[Benchmark Model 4](#_Toc53057733)**
-
-**[Evaluation Metrics 4](#_Toc53057734)**
-
-**[Project Design 7](#_Toc53057735)**
-
-**[References 9](#_Toc53057736)**
-
-# Table of Figures
-
-[Figure 1: Example Stock Price vs Time graph with predicted values 5](////Users/raj/Downloads/Udacity%20Capstone%20Project%20Proposal.docx#_Toc53056658)
-
-[Figure 2: Amazon SageMaker Workflow 7](////Users/raj/Downloads/Udacity%20Capstone%20Project%20Proposal.docx#_Toc53056659)
-
-[Figure 3: Typical Machine Learning Workflow (ZTM Udemy course) 7](////Users/raj/Downloads/Udacity%20Capstone%20Project%20Proposal.docx#_Toc53056660)
-
-# Domain Background
+## Domain Background
 
 An ideal real-world application of machine learning is in the world of trading and investing. It all works on predicting what will have to the price of a stock in the next few minutes or a few years. Hence, the aim is to **predict** and there is a **large amount of historical data** available to assist in making a prediction. Laying out the foundation to apply some machine learning algorithms.
 
@@ -57,12 +48,12 @@ One of the researches cited above worked on &quot;_SENSEX&#39;s Index dataset si
 
 I decided to take on this problem due to my interest in finance and some internship experience at a start-up that focuses on machine learning applications in intraday trading. I believe working on this project will give me a better understanding of the financial markets (finance in general) and time-series machine learning problems. As I have new to the world of machine learning and finance, I have decided to carry out technical analysis using the historical data of stocks.
 
-# Problem Statement
+## Problem Statement
 
 **The aim of this project is to predict the long-term price trend of two indices and one stock with at least 90% accuracy**
- **# 1****.** The stocks and indices will be chosen based on countries of interest and personal preference, but are clearly defined in the [Datasets and Inputs section](#_Datasets_and_Inputs). In the end, the ability of the model will be tested by making predicting one full year worth of data. Furthermore, the model&#39;s ability to predict how the stocks performed in 2020 (the year of the pandemic) will be observed.
+ **# 1****.** The stocks and indices will be chosen based on countries of interest and personal preference, but are clearly defined in the [Datasets and Inputs section](#Datasets-and-Inputs). In the end, the ability of the model will be tested by making predicting one full year worth of data. Furthermore, the model&#39;s ability to predict how the stocks performed in 2020 (the year of the pandemic) will be observed.
 
-# Datasets and Inputs
+## Datasets and Inputs
 
 Data selection is one of the easier parts of this project. As this is going to be a technical analysis, consisting of only the stock prices and volumes over the years, the data can be taken from a number of places. I have decided to take it from Yahoo Finance (_Yahoo Finance – stock market live, quotes, business &amp; finance news_, no date).
 
@@ -82,28 +73,27 @@ The data for the above will be downloaded from the Yahoo Finance website. It wil
 
 The datasets will be split into training and test data according to a timeline, which will be determined after visualizing the data. As this is a time-series problem, this seems like an appropriate way to move forward.
 
-# Solution Statement
+## Solution Statement
 
 Considering it is a time-series problem, I intend to use Amazon Sagemaker&#39;s DeepAR algorithm to make predictions and compare them to the results from an ARIMA model.
 
 - The data will be split in a 90-10 format, where 90% of the historical data will be used to train the model and the 10% will be used to test the model&#39;s performance.
-- The accuracy of the model will be measured by two metrics defined in the [Evaluation Metrics section](#_Evaluation_Metrics).
+- The accuracy of the model will be measured by two metrics defined in the [Evaluation Metrics section](#Evaluation-Metrics).
 - We will start by predicting thirty days of data and finally predict for the last one year (2020) of the data.
 
-# Benchmark Model
+## Benchmark Model
 
-The results obtained by Nagesh Singh Chauhan in his analysis of Altaba Inc. stock from _1996–04–12_ till _2017–11–10_ (Chauhan, no date). He managed to get a MAPE value of 3.5%, which can be said to be 96.5% accuracy, using a well-tuned ARIMA model. In this project, the goal will be to get the MAPE value to be less than 90%.
+The results obtained by Nagesh Singh Chauhan in his analysis of Altaba Inc. stock from _1996–04–12_ till _2017–11–10_ (Chauhan, no date). He managed to get a MAPE value of **3.5%**, which can be said to be **96.5% accuracy**, using a well-tuned **ARIMA model**. In this project, the goal will be to get the MAPE value to be less than 90%.
 
-# Evaluation Metrics
+## Evaluation Metrics
 
 I will be using two evaluation metrics to understand the model&#39;s performance.
 
 1. **Mean Absolute Percentage Error (MAPE)**: It is the mean of percentage of absolute errors of the predictions. The following formula explains how it is calculated (&#39;MEAN ABSOLUTE PERCENTAGE ERROR (MAPE)&#39;, 2006; Glen, 2011) :
 
-1. **Percentage Points Correctly Predicted** :
- ![](RackMultipart20201008-4-zu5bw3_html_9a4a7aebb1bb8334.gif)
+2. **Percentage Points Correctly Predicted** : It is the percentage of actual points that lie in the 30-70 (shorter inter-quartile) range of the predictions.
 
-It is the percentage of actual points that lie in the 30-70 (shorter inter-quartile) range of the predictions.
+![Example Graph](images/metric-example-graph.png)
 
 In the example graph above, it is clear that there are 3 out of 5 points fall in the 30-70 quartile range. Hence,
 
@@ -111,11 +101,11 @@ I came up with this metric as a solution to the problem predicting for larger in
 
 Hence, a combination of MAPE and Percentage Points will give a better understanding of how the model is performing.
 
-# Project Design
+## Project Design
 
-![](RackMultipart20201008-4-zu5bw3_html_c666473578baa492.gif)
+![AWS Worklflow](images/aws-ml-workflow.png)
 
-![](RackMultipart20201008-4-zu5bw3_html_39d56fb52bbc6b4.gif)
+![ZTM Udemy ML Course Workflow](images/ml101-6-step-ml-framework.png)
 
 I will be using a combination of the above workflows for this project (AWS, 2019; Bourke and Neagoie, 2020). A combination will yeild to something as follows:
 
@@ -127,13 +117,13 @@ I will be using a combination of the above workflows for this project (AWS, 2019
 4. **Create and Train a model.**
 5. **Deploy model as an endpoint and evaluate the performance.**
 6. **Repeat STEPS 4 and 5 for another model or after tuning hyperparameters. Models to be considered:**
-  1. **ARIMA**
-  2. **DeepAR**
+  3. **ARIMA**
+  4. **DeepAR**
 7. **Experiment to achieve the goal defined in the problem definition.**
 
 The last step will be carried out throughout the process.
 
-# References
+## References
 
 Agarwal, U. and Sabitha, A. S. (2017) &#39;Time series forecasting of stock market index&#39;, in _India International Conference on Information Processing, IICIP 2016 - Proceedings_. Institute of Electrical and Electronics Engineers Inc. doi: 10.1109/IICIP.2016.7975381.
 
