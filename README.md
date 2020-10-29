@@ -5,6 +5,8 @@
 
 [![powered by](https://forthebadge.com/images/badges/powered-by-water.svg)](https://forthebadge.com)
 
+*Update October 29, 2020: I am working on the project and will be committing changes and I make them.*
+
 ---
 
 # Table of Contents
