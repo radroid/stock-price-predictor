@@ -8,17 +8,18 @@
 ---
 
 # Table of Contents
-- [Stocks Prediction](#stocks-prediction)
 - [Table of Contents](#table-of-contents)
 - [Table of Figures](#table-of-figures)
-- [Capstone Proposal](#capstone-proposal)
+- [Capstone Project Report](#capstone-project-report)
+  - [Project Overview](#project-overview)
   - [Domain Background](#domain-background)
   - [Problem Statement](#problem-statement)
-  - [Datasets and Inputs](#datasets-and-inputs)
-  - [Solution Statement](#solution-statement)
-  - [Benchmark Model](#benchmark-model)
   - [Evaluation Metrics](#evaluation-metrics)
-  - [Project Design](#project-design)
+  - [Data Exploration and Visualisation](#data-exploration-and-visualisation)
+  - [Algorithms and Techniques](#algorithms-and-techniques)
+  - [Benchmark Model](#benchmark-model)
+  - [Data Anomalies and Implementation](#data-anomalies-and-implementation)
+  - [Results](#results)
   - [References](#references)
 
 
@@ -26,15 +27,28 @@
 
 [Figure 1: Example Stock Price vs Time graph with predicted values](images/metric-example-graph.png)
 
-[Figure 2: Amazon SageMaker Workflow ](images/aws-ml-workflow.png)
 
-[Figure 3: Typical Machine Learning Workflow (ZTM Udemy course)](images/ml101-6-step-ml-framework.png)
-
-# Capstone Proposal
+# Capstone Project Report
 
 Raj Dholakia
 
-October 8, 2020
+October 31, 2020
+
+## Project Overview
+I started with the aim of predicting prices of three stocks and came down using one while I prepared data to be processed. I have finally narrowed it down to training two different models and comparing their performance on `AAPL` stock data (in particular it's daily adjusted close price).
+
+This is my first independent project of this level and as my nature is, I took up a task rather ambituous to be completed on time. However, I have learnt many from the many mistakes I have made during this journey and intend to work on this project post my submission as part of the Machine Learning Nanodegree.
+
+I decided to break down my project into three different parts:
+1. Exploratory Data Analysis
+2. Data Preparation
+3. Model Training and Testing
+
+I focused a lot on ensuring code is clean, graphs are neat and everything is understandable and modular. Everything went smoothly till I reached the Model training part. When I realised what my first mistake was: **ambitious goals**.
+
+It is good to have ambitious goals, it is smarter to ensure they are realistic. I had filled my plate with everything I found interesting and now I did not have the time to finish it all. I had to cut down, which I did not do till the last minute. Now I am going to focus on the Rubric provided. Starting with the origin of this idea of working on stocks data in the next section: **Domain Background**.
+
+> *Following three sections are almost the same as the ones mentioned in the project proposal.*
 
 ## Domain Background
 
@@ -50,49 +64,18 @@ I decided to take on this problem due to my interest in finance and some interns
 
 ## Problem Statement
 
-**The aim of this project is to predict the long-term price trend of two indices and one stock with at least 90% accuracy.<sup>1</sup>** The stocks and indices will be chosen based on countries of interest and personal preference, but are clearly defined in the [Datasets and Inputs section](#Datasets-and-Inputs). In the end, the ability of the model will be tested by making predicting one full year worth of data. Furthermore, the model&#39;s ability to predict how the stocks performed in 2020 (the year of the pandemic) will be observed.
+**The aim of this project is to predict the long-term price trend of one stock with at least 90% accuracy.<sup>1</sup>** Two models' performances will be compared: ARIMA and DeepAR. In the end, the ability of the DeepAR model to predict the next ten months worth of data is tested. More importantly, the model&#39;s ability to predict how the stocks performed in 2020 (the year of the pandemic) will be observed.
 
 _<sup>1</sup> 90% accuracy can be taken as 10% mean absolute percentage error._
 
-## Datasets and Inputs
-
-Data selection is one of the easier parts of this project. As this is going to be a technical analysis, consisting of only the stock prices and volumes over the years, the data can be taken from a number of places. I have decided to take it from Yahoo Finance (_Yahoo Finance – stock market live, quotes, business &amp; finance news_, no date).
-
-The selection of stocks to be worked on in this project. I want to encompass a wide range of stocks, which not only give a better understanding of the model&#39;s performance, but also a prediction with some confidence on how the economy of a country will move post the pandemic.
-
-After some research, I have chosen the following:
-
-1. **S&amp;P 500 (^GSPC):** This is a good index to understand the performance of the US stock market. (Banton, 2019)
-2. **S&amp;P BSE SENSEX (^BSESN):** This is a good index to understand the performance of the Indian stock market. (_Stock Market Index : Meaning, Importance, NSE &amp; BSE and more_, 2020)
-3. **Apple Inc. (AAPL):** Apple has been known to be a must-have stock in an investment portfolio and I am personally interested in seeing how a model performs on this stock.
-
-The data for the above will be downloaded from the Yahoo Finance website. It will contain daily stock price data.
-
-- S&amp;P 500: from December 30, 1927 to October 02, 2020
-- S&amp;P BSE SENSEX: from July 01, 1997 to October 02, 2020
-- Apple Inc.: from December 12, 1980 to October 02, 2020
-
-The datasets will be split into training and test data according to a timeline, which will be determined after visualizing the data. As this is a time-series problem, this seems like an appropriate way to move forward.
-
-## Solution Statement
-
-Considering it is a time-series problem, I intend to use Amazon Sagemaker&#39;s DeepAR algorithm to make predictions and compare them to the results from an ARIMA model.
-
-- The data will be split in a 90-10 format, where 90% of the historical data will be used to train the model and the 10% will be used to test the model&#39;s performance.
-- The accuracy of the model will be measured by two metrics defined in the [Evaluation Metrics section](#Evaluation-Metrics).
-- We will start by predicting thirty days of data and finally predict for the last one year (2020) of the data.
-
-## Benchmark Model
-
-The results obtained by Nagesh Singh Chauhan in his analysis of Altaba Inc. stock from _1996–04–12_ till _2017–11–10_ (Chauhan, no date). He managed to get a MAPE value of **3.5%**, which can be said to be **96.5% accuracy**, using a well-tuned **ARIMA model**. In this project, the goal will be to get the MAPE value to be less than 90%.
-
 ## Evaluation Metrics
 
-I will be using two evaluation metrics to understand the model&#39;s performance.
+I will be using two evaluation metrics to understand the model&#39;s performance. 
+> One will be quantitative and the other will be visual (can be converted to quantitative):
 
 1. **Mean Absolute Percentage Error (MAPE)**: It is the mean of percentage of absolute errors of the predictions. The following formula explains how it is calculated (&#39;MEAN ABSOLUTE PERCENTAGE ERROR (MAPE)&#39;, 2006; Glen, 2011) :
 
-2. **Percentage Points Correctly Predicted** : It is the percentage of actual points that lie in the 30-70 (shorter inter-quartile) range of the predictions.
+2. **Percentage Points Correctly Predicted** : This is more of a visual indicator of how the model is doing. It is the percentage of actual points that lie in the 30-70 (shorter inter-quartile) range of the predictions.
 
 ![Example Graph](images/metric-example-graph.png)
 
@@ -102,27 +85,43 @@ I came up with this metric as a solution to the problem predicting for larger in
 
 Hence, a combination of MAPE and Percentage Points will give a better understanding of how the model is performing.
 
-## Project Design
+> *The following sections report on reasoning and results of the project.*
 
-![AWS Worklflow](images/aws-ml-workflow.png)
+## Data Exploration and Visualisation
+> Notebook 1_Exploratory_Data_Analysis
 
-![ZTM Udemy ML Course Workflow](images/ml101-6-step-ml-framework.png)
+The data was first loaded and features of the data understood and explained. This included meaning of `OHLC` prices and `Adj Close` price. The data for the three stock and/or indices were then looked visually inspected to determine the length of time series data to be taken. It was noticed that most of the data before `2002` was almost constant, compared to post `2002` for Apple Inc. Furthermore, the decision to use `Adj Close` for project was taken after understanding that multi-variate time series prediction will be beyond the scope of this project.
 
-I will be using a combination of the above workflows for this project (AWS, 2019; Bourke and Neagoie, 2020). A combination will yeild to something as follows:
 
-1. **Problem Definition: this proposal.**
-2. **Exploratory Data Analysis:**
-  1. **Load and Describe Data.**
-  2. **Visualise and Understand Data.**
-3. **Clean and Prepare Data.**
-4. **Create and Train a model.**
-5. **Deploy model as an endpoint and evaluate the performance.**
-6. **Repeat STEPS 4 and 5 for another model or after tuning hyperparameters. Models to be considered:**
-  3. **ARIMA**
-  4. **DeepAR**
-7. **Experiment to achieve the goal defined in the problem definition.**
+## Algorithms and Techniques
+> Notebook 2_Data_Preparation
 
-The last step will be carried out throughout the process.
+Data preparation required a better understanding how the two models: ARIMA and DeepAR. Not only was the working of the algorithm be understood, but also the varying formats in which both accept data were to be understood well. A section is dedicated to the description of the models. Data is then prepared for each of the model.
+
+## Benchmark Model
+The results obtained by Nagesh Singh Chauhan in his analysis of Altaba Inc. stock from _1996–04–12_ till _2017–11–10_ (Chauhan, no date). He managed to get a MAPE value of **3.5%**, which can be said to be **96.5% accuracy**, using a well-tuned **ARIMA model**. In this project, the goal will be to get the MAPE value to be less than 90%.
+
+This is a very particular example and it could turn out of that the results obtained are not as expected. I will be identifying the shortcomings of the analysis.
+
+## Data Anomalies and Implementation
+One of the major concerns in the data is the missing data for bank holidays and weekends. This is common as stock markets will not be open on that day. As we have daily data, it is necessary that it is taken care of. In notebook 2_Data_Preparation, I had decided to keep missing data and let DeepAR algorithm handle it. However, when training a DeepAR model, an error kept preventing the data from being read. After numerous attempts at ensuring the data is in the correct `JSON Line` format, I decided to remove all the `Nan` values. After removal of all of these, the model trained. I realised the hard way that one of the sources might not have misguided me.
+
+> Flunkert, V. et al. (2018) Amazon SageMaker DeepAR now supports missing values, categorical and time series features, and generalized frequencies | AWS Machine Learning Blog, Amazon SageMaker, Artificial Intelligence. Available at: https://aws.amazon.com/blogs/machine-learning/amazon-sagemaker-deepar-now-supports-missing-values-categorical-and-time-series-features-and-generalized-frequencies/ (Accessed: 29 October 2020).
+
+## Results
+There is a lot of work needed on this end of the project. From better data handling to improved model tuning, all aspects of the implementation need to be worked on. I have created multiple functions to prepare the data to be fed into the algorithms, to plot graphs to understand performance, evaluate a model's performance with the predictions. Currently, all the results obtained cannot be considered valid. ARIMA model yielded results show a MAPE of almost 100% and DeepAR model shows over 2000%. I believe the problem is in the way the data is being provided to the models: the indexing of the data. The data recieved from a predictor uses integers as an index and the indices in the training data are in DateTimeIndex format. If indices need to be in the same format, it will enable better understanding and smoother integration of real and predicted values.
+
+Second improvement that can be made would be to find a way to manage missing data. One of the ways I have tried to get around it is by linear interpolation of the missing values. I could try to instead remove the missing data and observe how the model performs. As we are looking at a time series which does not have a very seasonal trend, the latter could work better.
+
+Thirdly, the aim should be to get valid results from the models for now. Once valid predictions are being made, hypereparameter tuning can be done. For the ARIMA model, I started by trying to find the optimal value for lag without training and testing the model. All the methods used provide a tentative value of `p` and `q`. The optimal values can only be determined by modelling and testing.
+
+Finally, more examples of time series analysis of stock prices needed to be looked at to understand if the benchmark model provides a realistic goal. This is to be ensure that the benchmark model is robust and similar results can be obtained for other stocks or indices. 
+
+> Another note, all the functions can be neatly packed in a `helper_functions.py` file and accessed in the notebooks to make the notebooks more presentable.
+
+## Final Words
+I agree my goal had been ambitious from the beginning. However, I have worked hard to implement everything to the best of my ability for the time I had in my hand. I will continue giving time to this project to improve it and make it something presentable to other Aspiring Machine Learning Engineers. Working on this project has given me a better understanding of what kind of problems can a Machine Learning project face at a small level. It all starts by defining a problem statement and coming back to it now and then to improve it. Some exploratory data analysis can give new ideas and the problem statement can be tuned to take-in the concerns. Setting a methodology will ensure the focus of the project remains the same throughout. Results are the best place to learn about what could be improved in the data processing and implementation process (even if they are incomplete). Machine Learning is all about jumping multiple obstacles, reaching the finish line, coming back and evaluating the obstacles till we understand what is the best way to cross an obstacle.
+
 
 ## References
 
