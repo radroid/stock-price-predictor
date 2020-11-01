@@ -5,7 +5,7 @@
 
 [![powered by](https://forthebadge.com/images/badges/powered-by-water.svg)](https://forthebadge.com)
 
-*Update October 29, 2020: I am working on the project and will be committing changes and I make them.*
+*Update November 1, 2020: I have submitted the project, but will be committing new changes till I have solved the [problem statment](#problem-statement).*
 
 ---
 
@@ -101,7 +101,7 @@ Other metrics like the `mean squared error (MSE)` and `root mean squared error (
 ## Data Exploration and Visualisation
 > Notebook 1_Exploratory_Data_Analysis
 
-![data_example](images/data_example)
+![data_example](images/data_example.png)
 
 The data was first loaded and features of the data understood and explained in the notebook. Above is a picture containing the first five rows of `AAPL` stock price data. This included meaning of `OHLC` prices and `Adj Close` price. All these prices are very strongly correlated to each other for `AAPL`. The data for the three stock and/or indices were then looked visually inspected to determine the length of time series data to be taken. It is noticed that most of the data before `2002` was almost constant when considering the changes post `2002` for Apple Inc. Furthermore, the decision to use `Adj Close` for project was taken after understanding different types of time series forecasts. To predict multiple prices using one model, multi-variate time series prediction is to be utilised, which is beyond the scope of this project.
 
