@@ -19,16 +19,21 @@
   - [Evaluation Metrics](#evaluation-metrics)
   - [Data Exploration and Visualisation](#data-exploration-and-visualisation)
   - [Algorithms and Techniques](#algorithms-and-techniques)
+    - [Data Anomalies](#data-anomalies)
   - [Benchmark Model](#benchmark-model)
-  - [Data Anomalies and Implementation](#data-anomalies-and-implementation)
+  - [Data Processing](#data-processing)
+  - [Implementation](#implementation)
+  - [Refinement](#refinement)
+  - [Model Evaluation and Validation](#model-evaluation-and-validation)
   - [Results](#results)
+  - [Reflection](#reflection)
   - [References](#references)
 
 
 # Table of Figures
 
 [Figure 1: Example Stock Price vs Time graph with predicted values](images/metric-example-graph.png)
-
+[Figure 2: Example Stock Price data Image](images/data_example)
 
 # Capstone Project Report
 
@@ -98,7 +103,7 @@ Other metrics like the `mean squared error (MSE)` and `root mean squared error (
 
 ![data_example](images/data_example)
 
-The data was first loaded and features of the data understood and explained in the notebook. Above is a picture containing the first five rows of `AAPL` stock price data. This included meaning of `OHLC` prices and `Adj Close` price. All these prices are very strongly correlated to each other for `AAPL`. The data for the three stock and/or indices were then looked visually inspected to determine the length of time series data to be taken. It is noticed that most of the data before `2002` was almost constant when considering the changes post `2002` for Apple Inc. Furthermore, the decision to use `Adj Close` for project was taken after understanding different types of time series forecasts. To predict multiple prices using one model, multi-variate time series prediction is to be utilised, whichis  beyond the scope of this project.
+The data was first loaded and features of the data understood and explained in the notebook. Above is a picture containing the first five rows of `AAPL` stock price data. This included meaning of `OHLC` prices and `Adj Close` price. All these prices are very strongly correlated to each other for `AAPL`. The data for the three stock and/or indices were then looked visually inspected to determine the length of time series data to be taken. It is noticed that most of the data before `2002` was almost constant when considering the changes post `2002` for Apple Inc. Furthermore, the decision to use `Adj Close` for project was taken after understanding different types of time series forecasts. To predict multiple prices using one model, multi-variate time series prediction is to be utilised, which is beyond the scope of this project.
 
 One of the major anomalities of the data is the missing values for weekends and bank holidays. As it can be seen in the example above, data is missing for days and those are the times the stock market was closed. This is a concern in time series data analysis as it creates a time gap. Bank holidays especially are a problem as it becomes difficult to take into account all the holidays when considering over 20 years of data. This specific characteristic of the data needs to be managed carefully.
 
@@ -118,7 +123,7 @@ On the other hand, DeepAR requires multiple time series in a `JSON Lines` format
 
 The parameters taken by both the models are of great importance to how the model performs. The discussion on parameter selection can be found in Notebook `3_Model_Train_Test`.
 
-### Data Anomalies and Implementation
+### Data Anomalies
 One of the major concerns in the data is the missing data for bank holidays and weekends. This is common as stock markets will not be open on that day. As we have daily data, it is necessary that it is taken care of. In notebook 2_Data_Preparation, I had decided to keep missing data and let DeepAR algorithm handle it. However, when training a DeepAR model, an error kept preventing the data from being read. After numerous attempts at ensuring the data is in the correct `JSON Line` format, I decided to remove all the `Nan` values. After removal of all of these, the model trained. I realised the hard way that one of the sources might not have misguided me.
 
 > Flunkert, V. et al. (2018) Amazon SageMaker DeepAR now supports missing values, categorical and time series features, and generalized frequencies | AWS Machine Learning Blog, Amazon SageMaker, Artificial Intelligence. Available at: https://aws.amazon.com/blogs/machine-learning/amazon-sagemaker-deepar-now-supports-missing-values-categorical-and-time-series-features-and-generalized-frequencies/ (Accessed: 29 October 2020).
@@ -128,20 +133,45 @@ The results obtained by Nagesh Singh Chauhan in his analysis of Altaba Inc. stoc
 
 This is a very particular example and it could turn out of that the results obtained are not as expected. I will be identifying the shortcomings of the analysis.
 
+## Data Preprocesssing
+Time series data usually do not require preprocessing, apart from management of missing values. In our case, we need to manage missing values and ensure the indexing of the values is done correctly. While, the latter has been a recent discovery, the former has been addressed in Notebook `2_Data_Preparation`. 
+
+> Deeper discussion in [Data Anomalies and Implementation](#data-anomalies-and-implementation)
+
+First all the missing dates were added to the series with `Nan` values. Then these missing values were filled with interpolated values. As we are dealing with a time series problem, interpolation is the best option. Further investigation can be done on the effects of higher order interpolation on the performance of the models, but that is beyond the scope of this project.
+
+## Implementation
+I have clearly explained every step taken in all the three notebooks. The second metric decided upon is slightly complicated as I have not been able to find resources that teach how to get quantiles from an ARIMA model. Hence, it is now limited to a graphical representation. There are numerous helper functions created throughout the notebooks. These functions can be found in `helper_functions.py` python script. They all contain a docstring and can be imported into a jupyter notebook and used.
+
+## Refinement
+Many modifcations have been made to the initial plan of action. The solution to the problem did not come easy. The process of improving performance of a model is a long process and I have just scratched the surface by creating one and bringing small improvements to it. I intend to work on improving the DeepAR model's performance post-submission of this capstone project. I aim to ensure I am able to solve the problem statement and acheive at least 90% accuracy. Currently, I have refined the following two (one technique and :
+1. Data processing: Data processing has been a long processs of ups and downs. It started with preparing the first set or type of data for ARIMA model. As I got to know more about the model, my dataset kept changing. I had started with the expectation of using the same data for the ARIMA modelling process as use in DeepAR. However, after the first ostacle, it seemed like a better idea as I will be able to train and test the model on multiple time series. However, ARIMA seems to throw errors and going around to change it back into a pandas series, I would have to create one more function. Instead, the process was shorter if the data for ARIMA model were saved locally and loaded in the whichever notebook it is needed. Data processing can be further refined as there are places where I have to recreate the same data again. This can be avoided saving the data locally in an easily readable format.
+2. ARIMA model performance: The MAPE value was improved from `19.1%` to `15.3%` by just manual hyperparameter tuning. Can be improved by trying different sets of parameters and using different ways to make the time series stationary.
+
+## Model Evaluation and Validation
+Model validation is done with the test data saved with the training data. DeepAR model takes the test data and uses it to train the neural network, while we use the test data for the ARIMA model to train and measure the performance of the model. Once we have models performing well (around `10% MAPE Value` or 90% accuracy), the models will be tested on the `275 days` or `10 months` of data of 2020. The metrics remain the same as models are validated and tested.
+
+Currently, the ARIMA model has a accuracy of `85%` and the DeepAR model has of `80.1%` for the same test data. Better results can be achieved as minimal hyperparameter tuning has taken place.
+
+The ARIMA model has higher chances of running into a bias as it has only one test set. Comparatively, the DeepAR model has `five` different time series sets with each having a test time series. Hence, an average MAPE value of how the model performs in each of those training series will give a more robust and accurate understanding of DeepAR's performance. On the other hand, the ARIMA model will need to be tested on completely unseen data (of year 2020) to guage it's performance accurately after hyperparameter tuning.
+
+Comparing the results obtained to the benchmark model, there is 10-15% difference in the MAPE. The hyperparameters of benchmark model have not been tuned and the results seem too good to be true. Firstly, the stock is not very widely traded or has a volatile nature. `AAPL` is a realiable, but volatile stock and it can be difficult to predict the price compared to Altaba Inc. It might as well be the case that Mr. Chauhan found a stock that works best for the model he has created, which led to such a low MAPE. There could be a bias that we might not be aware of. Hence, it is important to look at what other models that have attempted to predict stock prices.
+
 ## Results
-There is a lot of work needed on this end of the project. From better data handling to improved model tuning, all aspects of the implementation need to be worked on. I have created multiple functions to prepare the data to be fed into the algorithms, to plot graphs to understand performance, evaluate a model's performance with the predictions. Currently, all the results obtained cannot be considered valid. ARIMA model yielded results show a MAPE of almost 100% and DeepAR model shows over 2000%. I believe the problem is in the way the data is being provided to the models: the indexing of the data. The data recieved from a predictor uses integers as an index and the indices in the training data are in DateTimeIndex format. If indices need to be in the same format, it will enable better understanding and smoother integration of real and predicted values.
+There is a lot of work needed on this **completely** finish the project. From better data handling technique to improved model tuning, all aspects of the implementation need to be worked on. I have created multiple functions to prepare the data to be fed into the algorithms, to plot graphs to understand performance, evaluate a model's performance with the predictions.
+
+First improvment that can be made should be to indexing of the data. The data recieved from a predictor uses integers as an index and the indices in the training data are in DateTimeIndex format. If indices need to be in the same format, it will enable better understanding and smoother integration of real and predicted values.
 
 Second improvement that can be made would be to find a way to manage missing data. One of the ways I have tried to get around it is by linear interpolation of the missing values. I could try to instead remove the missing data and observe how the model performs. As we are looking at a time series which does not have a very seasonal trend, the latter could work better.
 
-Thirdly, the aim should be to get valid results from the models for now. Once valid predictions are being made, hypereparameter tuning can be done. For the ARIMA model, I started by trying to find the optimal value for lag without training and testing the model. All the methods used provide a tentative value of `p` and `q`. The optimal values can only be determined by modelling and testing.
+Thirdly, find an efficient way to do hyperparameter tuning for the ARIMA model. For the ARIMA model, I started by trying to find the optimal value for lag requires analysis of the data **and** training and testing the model. All the analysis methods used provide a tentative value of `p` and `q`, which can be leveraged to find the optimal values by modelling and testing.
 
-Finally, more examples of time series analysis of stock prices needed to be looked at to understand if the benchmark model provides a realistic goal. This is to be ensure that the benchmark model is robust and similar results can be obtained for other stocks or indices. 
+Finally, more examples of time series analysis of stock prices needed to be looked at to understand if the current benchmark model provides a realistic goal. This is to be ensure that the benchmark model provides a robust and accurate representation of an algorithm's performance. similar results can be obtained for other stocks or indices. 
 
 > Another note, all the functions can be neatly packed in a `helper_functions.py` file and accessed in the notebooks to make the notebooks more presentable.
 
-## Final Words
-I agree my goal had been ambitious from the beginning. However, I have worked hard to implement everything to the best of my ability for the time I had in my hand. I will continue giving time to this project to improve it and make it something presentable to other Aspiring Machine Learning Engineers. Working on this project has given me a better understanding of what kind of problems can a Machine Learning project face at a small level. It all starts by defining a problem statement and coming back to it now and then to improve it. Some exploratory data analysis can give new ideas and the problem statement can be tuned to take-in the concerns. Setting a methodology will ensure the focus of the project remains the same throughout. Results are the best place to learn about what could be improved in the data processing and implementation process (even if they are incomplete). Machine Learning is all about jumping multiple obstacles, reaching the finish line, coming back and evaluating the obstacles till we understand what is the best way to cross an obstacle.
-
+## Reflection
+I believe my goal had been ambitious from the beginning. However, I have worked hard to implement everything to the best of my ability for the time I had in my hand. I will continue giving time to this project to improve it and make it something presentable to other Aspiring Machine Learning Engineers. Working on this project has given me a better understanding of what kind of problems can a Machine Learning project face (thought at a smaller level). It all starts by defining a problem statement and coming back to it now and then to improve it. Some exploratory data analysis can provide some fresh ideas and the problem statement can be tuned to account for changes. Setting a methodology will ensure the focus on the project remains the same throughout. Results are the best place to learn about what could be improved in the data processing and implementation process (even if they are incomplete). Machine Learning is all about jumping multiple obstacles, reaching the finish line, restarting behind the obstacle and evaluating till we understand what is the best way to cross an obstacle.
 
 ## References
 
