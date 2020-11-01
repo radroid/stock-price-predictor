@@ -66,13 +66,15 @@ I decided to take on this problem due to my interest in finance and some interns
 
 ## Problem Statement
 
-**The aim of this project is to predict the long-term price trend of one stock with at least 90% accuracy.<sup>1</sup>** Two models' performances will be compared: ARIMA and DeepAR. In the end, the ability of the DeepAR model to predict the next ten months worth of data is tested. More importantly, the model&#39;s ability to predict how the stocks performed in 2020 (the year of the pandemic) will be observed.
+**The aim of this project is to predict the long-term price trend of one stock with at least 90% accuracy.<sup>1</sup>** Two models' performances will be compared: ARIMA and DeepAR. In the end, the ability of the DeepAR model to predict the next ten months worth of data is tested. More importantly, the model&#39;s ability to predict how the stocks performed in 2020 (the year of the pandemic) will be observed. There are multiple options when it comes to time series forecasting and I have decided to do a univariate prediction. As this is the first time I am independently working on time series data, it is important I keep things as simple as possible. Hence open, high, low, close prices will not be predicted, only adjusted close price will used for the prediction.
+
+In the end, the model should be able to able to predict a general trend of the time series. One particular graph that will give a visual indication of the solution being reached is the quantiles graph. The aim is to use 30-70% quantiles of the predictions to encompass the true time series.
 
 _<sup>1</sup> 90% accuracy can be taken as 10% mean absolute percentage error._
 
 ## Evaluation Metrics
 
-I will be using two evaluation metrics to understand the model&#39;s performance. 
+I will be using two main evaluation metrics to understand the model&#39;s performance. 
 > One will be quantitative and the other will be visual (can be converted to quantitative):
 
 1. **Mean Absolute Percentage Error (MAPE)**: It is the mean of percentage of absolute errors of the predictions. The following formula explains how it is calculated (&#39;MEAN ABSOLUTE PERCENTAGE ERROR (MAPE)&#39;, 2006; Glen, 2011) :
@@ -87,28 +89,44 @@ I came up with this metric as a solution to the problem predicting for larger in
 
 Hence, a combination of MAPE and Percentage Points will give a better understanding of how the model is performing.
 
+Other metrics like the `mean squared error (MSE)` and `root mean squared error (RMSE)` can be used to further support MAPE. As MAPE is a percentage value it will be easier to compare it with other stocks of different prices. Additionally, as the stock price starts with low values (in the 20th Century) and starts rising over time, it is important to use a metric that is independent of price.
+
 > *The following sections report on reasoning and results of the project.*
 
 ## Data Exploration and Visualisation
 > Notebook 1_Exploratory_Data_Analysis
 
-The data was first loaded and features of the data understood and explained. This included meaning of `OHLC` prices and `Adj Close` price. The data for the three stock and/or indices were then looked visually inspected to determine the length of time series data to be taken. It was noticed that most of the data before `2002` was almost constant, compared to post `2002` for Apple Inc. Furthermore, the decision to use `Adj Close` for project was taken after understanding that multi-variate time series prediction will be beyond the scope of this project.
+![data_example](images/data_example)
 
+The data was first loaded and features of the data understood and explained in the notebook. Above is a picture containing the first five rows of `AAPL` stock price data. This included meaning of `OHLC` prices and `Adj Close` price. All these prices are very strongly correlated to each other for `AAPL`. The data for the three stock and/or indices were then looked visually inspected to determine the length of time series data to be taken. It is noticed that most of the data before `2002` was almost constant when considering the changes post `2002` for Apple Inc. Furthermore, the decision to use `Adj Close` for project was taken after understanding different types of time series forecasts. To predict multiple prices using one model, multi-variate time series prediction is to be utilised, whichis  beyond the scope of this project.
+
+One of the major anomalities of the data is the missing values for weekends and bank holidays. As it can be seen in the example above, data is missing for days and those are the times the stock market was closed. This is a concern in time series data analysis as it creates a time gap. Bank holidays especially are a problem as it becomes difficult to take into account all the holidays when considering over 20 years of data. This specific characteristic of the data needs to be managed carefully.
 
 ## Algorithms and Techniques
 > Notebook 2_Data_Preparation
+Two algorithms are used in this project:
+1. Auto-Regression Integrated Moving Average (ARIMA)
+2. AWS DeepAR
 
-Data preparation required a better understanding how the two models: ARIMA and DeepAR. Not only was the working of the algorithm be understood, but also the varying formats in which both accept data were to be understood well. A section is dedicated to the description of the models. Data is then prepared for each of the model.
+A section in the notebook is dedicated to dicussing the insides of each of the models. Not only was the working of the algorithm be understood, but also the varying formats in which both accept data were to be understood well. Data is then prepared for each of the models. 
+
+The train-test split for both the model is different. The train-test split being created for DeepAR will contain multiple time series, while for the ARIMA model one large time series will be split into train and test dataset. If the Maintaining the prediction length for both the models, the data split percent will be quite differently. ARIMA model will be provided one a train series of around 218 months long and test time would include the last 10 months of 2019. Both the models will be tested on the first 10 months of 2020 (Jan 2020 - Oct 2020). This will ensure a more robust comparison between the two.
+
+The time series is to be made stationary to hold all assumptions made for the ARIMA algorithm. The test for stationarity (`Augmented Dickey-Fuller Test`) is used to determine if the time series can be assumed to be stationary. This discussion is done in Notebook `3_Model_Train_Test`.
+
+On the other hand, DeepAR requires multiple time series in a `JSON Lines` format. The algorithms takes train and test data and trains a neural network to predict the `prediction_length` using a given `context_length`. Once the model is trained, we can also make predtions from a given timestamp (we will use this feature to get predictions from January 1, 2020).
+
+The parameters taken by both the models are of great importance to how the model performs. The discussion on parameter selection can be found in Notebook `3_Model_Train_Test`.
+
+### Data Anomalies and Implementation
+One of the major concerns in the data is the missing data for bank holidays and weekends. This is common as stock markets will not be open on that day. As we have daily data, it is necessary that it is taken care of. In notebook 2_Data_Preparation, I had decided to keep missing data and let DeepAR algorithm handle it. However, when training a DeepAR model, an error kept preventing the data from being read. After numerous attempts at ensuring the data is in the correct `JSON Line` format, I decided to remove all the `Nan` values. After removal of all of these, the model trained. I realised the hard way that one of the sources might not have misguided me.
+
+> Flunkert, V. et al. (2018) Amazon SageMaker DeepAR now supports missing values, categorical and time series features, and generalized frequencies | AWS Machine Learning Blog, Amazon SageMaker, Artificial Intelligence. Available at: https://aws.amazon.com/blogs/machine-learning/amazon-sagemaker-deepar-now-supports-missing-values-categorical-and-time-series-features-and-generalized-frequencies/ (Accessed: 29 October 2020).
 
 ## Benchmark Model
 The results obtained by Nagesh Singh Chauhan in his analysis of Altaba Inc. stock from _1996–04–12_ till _2017–11–10_ (Chauhan, no date). He managed to get a MAPE value of **3.5%**, which can be said to be **96.5% accuracy**, using a well-tuned **ARIMA model**. In this project, the goal will be to get the MAPE value to be less than 90%.
 
 This is a very particular example and it could turn out of that the results obtained are not as expected. I will be identifying the shortcomings of the analysis.
-
-## Data Anomalies and Implementation
-One of the major concerns in the data is the missing data for bank holidays and weekends. This is common as stock markets will not be open on that day. As we have daily data, it is necessary that it is taken care of. In notebook 2_Data_Preparation, I had decided to keep missing data and let DeepAR algorithm handle it. However, when training a DeepAR model, an error kept preventing the data from being read. After numerous attempts at ensuring the data is in the correct `JSON Line` format, I decided to remove all the `Nan` values. After removal of all of these, the model trained. I realised the hard way that one of the sources might not have misguided me.
-
-> Flunkert, V. et al. (2018) Amazon SageMaker DeepAR now supports missing values, categorical and time series features, and generalized frequencies | AWS Machine Learning Blog, Amazon SageMaker, Artificial Intelligence. Available at: https://aws.amazon.com/blogs/machine-learning/amazon-sagemaker-deepar-now-supports-missing-values-categorical-and-time-series-features-and-generalized-frequencies/ (Accessed: 29 October 2020).
 
 ## Results
 There is a lot of work needed on this end of the project. From better data handling to improved model tuning, all aspects of the implementation need to be worked on. I have created multiple functions to prepare the data to be fed into the algorithms, to plot graphs to understand performance, evaluate a model's performance with the predictions. Currently, all the results obtained cannot be considered valid. ARIMA model yielded results show a MAPE of almost 100% and DeepAR model shows over 2000%. I believe the problem is in the way the data is being provided to the models: the indexing of the data. The data recieved from a predictor uses integers as an index and the indices in the training data are in DateTimeIndex format. If indices need to be in the same format, it will enable better understanding and smoother integration of real and predicted values.
