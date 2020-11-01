@@ -32,8 +32,8 @@
 
 # Table of Figures
 
-[Figure 1: Example Stock Price vs Time graph with predicted values](images/metric-example-graph.png)
-[Figure 2: Example Stock Price data Image](images/data_example)
+- [Figure 1: Example Stock Price vs Time graph with predicted values](images/metric-example-graph.png)
+- [Figure 2: Example Stock Price data Image](images/data_example.png)
 
 # Capstone Project Report
 
