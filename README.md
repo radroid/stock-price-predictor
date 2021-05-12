@@ -7,6 +7,8 @@
 
 *Update November 1, 2020: I have submitted the project, but will be committing new changes till I have solved the [problem statment](#problem-statement).*
 
+*Update May 12, 2021: Solving the [problem statment](#problem-statement) requires access to some Amazon Web Services (AWS) like Sagemaker and other compute instances, which are all __paid__ services. Hence, I have kept the project on hold till I have enough funds to get started on the project.*
+
 ---
 
 # Problem Statement
